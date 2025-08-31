@@ -1,8 +1,9 @@
 "use client";
 
-import type React from "react";
+import React, { useState, useMemo } from "react";
 
-import { useState, useMemo } from "react";
+// ...existing code...
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +22,14 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Brain, Upload, FileText, ArrowLeft, Loader2 } from "lucide-react";
+import {
+    Brain,
+    Upload,
+    FileText,
+    ArrowLeft,
+    Loader2,
+    Plus,
+} from "lucide-react";
 import Swal from "sweetalert2";
 
 const courseData = {
@@ -192,10 +200,15 @@ const courseData = {
 };
 
 export default function UploadPage() {
+    const { toast } = useToast();
     const [selectedCourse, setSelectedCourse] = useState("");
     const [selectedIndustry, setSelectedIndustry] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [customCourse, setCustomCourse] = useState("");
+    const [customIndustry, setCustomIndustry] = useState("");
+    const [courseOptions, setCourseOptions] = useState(Object.keys(courseData));
+    const [industryOptions, setIndustryOptions] = useState<string[]>([]);
     const router = useRouter();
 
     const availableIndustries = useMemo(() => {
@@ -208,9 +221,34 @@ export default function UploadPage() {
         return courseData[selectedCourse as keyof typeof courseData].industries;
     }, [selectedCourse]);
 
+    // Sync industryOptions with availableIndustries and custom
+    React.useEffect(() => {
+        setIndustryOptions(availableIndustries);
+    }, [availableIndustries]);
+
     const handleCourseChange = (course: string) => {
         setSelectedCourse(course);
         setSelectedIndustry(""); // Reset industry selection
+        setIndustryOptions(
+            courseData[course as keyof typeof courseData]?.industries || []
+        );
+    };
+
+    const handleAddCustomCourse = () => {
+        const trimmed = customCourse.trim();
+        if (!trimmed || courseOptions.includes(trimmed)) return;
+        setCourseOptions((prev) => [...prev, trimmed]);
+        setSelectedCourse(trimmed);
+        setCustomCourse("");
+        setIndustryOptions([]);
+    };
+
+    const handleAddCustomIndustry = () => {
+        const trimmed = customIndustry.trim();
+        if (!trimmed || industryOptions.includes(trimmed)) return;
+        setIndustryOptions((prev) => [...prev, trimmed]);
+        setSelectedIndustry(trimmed);
+        setCustomIndustry("");
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -388,6 +426,7 @@ export default function UploadPage() {
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {/* Course Selection */}
+
                                 <div className="space-y-2">
                                     <Label htmlFor="course">
                                         Course/Field of Study
@@ -400,17 +439,64 @@ export default function UploadPage() {
                                             <SelectValue placeholder="Select your course or field of study" />
                                         </SelectTrigger>
                                         <SelectContent className="animate-dropdown-in">
-                                            {Object.keys(courseData).map(
-                                                (course) => (
-                                                    <SelectItem
-                                                        key={course}
-                                                        value={course}
-                                                        className="transition-colors duration-150 hover:bg-secondary/80"
-                                                    >
-                                                        {course}
-                                                    </SelectItem>
-                                                )
-                                            )}
+                                            <div className="relative px-2 py-1 border-b border-border mb-1 flex items-center">
+                                                <Input
+                                                    value={customCourse}
+                                                    onChange={(e) => {
+                                                        setCustomCourse(
+                                                            e.target.value
+                                                        );
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            // If matches exactly, select, else add
+                                                            const match =
+                                                                courseOptions.find(
+                                                                    (opt) =>
+                                                                        opt.toLowerCase() ===
+                                                                        customCourse
+                                                                            .trim()
+                                                                            .toLowerCase()
+                                                                );
+                                                            if (match) {
+                                                                setSelectedCourse(
+                                                                    match
+                                                                );
+                                                            } else {
+                                                                handleAddCustomCourse();
+                                                            }
+                                                        }
+                                                    }}
+                                                    placeholder="Add or search course..."
+                                                    className="h-8 text-sm pr-8"
+                                                />
+                                                {customCourse.trim() &&
+                                                    !courseOptions.some(
+                                                        (opt) =>
+                                                            opt.toLowerCase() ===
+                                                            customCourse
+                                                                .trim()
+                                                                .toLowerCase()
+                                                    ) && (
+                                                        <Plus
+                                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-primary transition"
+                                                            size={18}
+                                                            onClick={
+                                                                handleAddCustomCourse
+                                                            }
+                                                        />
+                                                    )}
+                                            </div>
+                                            {courseOptions.map((course) => (
+                                                <SelectItem
+                                                    key={course}
+                                                    value={course}
+                                                    className="transition-colors duration-150 hover:bg-secondary/80"
+                                                >
+                                                    {course}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -435,17 +521,66 @@ export default function UploadPage() {
                                             />
                                         </SelectTrigger>
                                         <SelectContent className="animate-dropdown-in">
-                                            {availableIndustries.map(
-                                                (industry) => (
-                                                    <SelectItem
-                                                        key={industry}
-                                                        value={industry}
-                                                        className="transition-colors duration-150 hover:bg-secondary/80"
-                                                    >
-                                                        {industry}
-                                                    </SelectItem>
-                                                )
-                                            )}
+                                            <div className="relative px-2 py-1 border-b border-border mb-1 flex items-center">
+                                                <Input
+                                                    value={customIndustry}
+                                                    onChange={(e) => {
+                                                        setCustomIndustry(
+                                                            e.target.value
+                                                        );
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === "Enter") {
+                                                            e.preventDefault();
+                                                            // If matches exactly, select, else add
+                                                            const match =
+                                                                industryOptions.find(
+                                                                    (opt) =>
+                                                                        opt.toLowerCase() ===
+                                                                        customIndustry
+                                                                            .trim()
+                                                                            .toLowerCase()
+                                                                );
+                                                            if (match) {
+                                                                setSelectedIndustry(
+                                                                    match
+                                                                );
+                                                            } else {
+                                                                handleAddCustomIndustry();
+                                                            }
+                                                        }
+                                                    }}
+                                                    placeholder="Add or search industry..."
+                                                    className="h-8 text-sm pr-8"
+                                                    disabled={!selectedCourse}
+                                                />
+                                                {customIndustry.trim() &&
+                                                    !industryOptions.some(
+                                                        (opt) =>
+                                                            opt.toLowerCase() ===
+                                                            customIndustry
+                                                                .trim()
+                                                                .toLowerCase()
+                                                    ) &&
+                                                    selectedCourse && (
+                                                        <Plus
+                                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-primary transition"
+                                                            size={18}
+                                                            onClick={
+                                                                handleAddCustomIndustry
+                                                            }
+                                                        />
+                                                    )}
+                                            </div>
+                                            {industryOptions.map((industry) => (
+                                                <SelectItem
+                                                    key={industry}
+                                                    value={industry}
+                                                    className="transition-colors duration-150 hover:bg-secondary/80"
+                                                >
+                                                    {industry}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
