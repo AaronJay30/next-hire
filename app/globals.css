@@ -1,0 +1,209 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+    --background: oklch(0.99 0.005 120); /* Softer off-white with green tint */
+    --foreground: oklch(0.35 0.01 120); /* Softer dark green-gray */
+    --card: oklch(0.98 0.005 120); /* Softer card background */
+    --card-foreground: oklch(0.35 0.01 120); /* Softer text */
+    --popover: oklch(0.99 0.005 120); /* Softer popover */
+    --popover-foreground: oklch(0.35 0.01 120); /* Softer text */
+    /* Updated primary to soft green for standardized color scheme */
+    --primary: oklch(0.5 0.12 140); /* Soft green */
+    --primary-foreground: oklch(0.99 0.005 120); /* Soft white */
+    --secondary: oklch(0.96 0.01 120); /* Softer secondary */
+    --secondary-foreground: oklch(0.35 0.01 120); /* Softer text */
+    --muted: oklch(0.96 0.01 120); /* Softer muted */
+    --muted-foreground: oklch(0.55 0.01 120); /* Softer muted text */
+    /* Updated accent to darker green instead of orange/coral */
+    --accent: oklch(0.45 0.15 160); /* Darker green accent */
+    --accent-foreground: oklch(0.99 0.005 120); /* Soft white */
+    --destructive: oklch(0.55 0.18 15); /* Softer red */
+    --destructive-foreground: oklch(0.99 0.005 120); /* Soft white */
+    --border: oklch(0.92 0.01 120); /* Softer border */
+    --input: oklch(0.98 0.005 120); /* Softer input */
+    --ring: oklch(0.5 0.12 140); /* Soft green ring */
+    /* Updated chart colors to green variants only */
+    --chart-1: oklch(0.5 0.12 140); /* Soft green */
+    --chart-2: oklch(0.45 0.15 160); /* Darker green */
+    --chart-3: oklch(0.6 0.1 130); /* Light green */
+    --chart-4: oklch(0.4 0.08 150); /* Dark green */
+    --chart-5: oklch(0.35 0.1 170); /* Very dark green */
+    --radius: 0.75rem; /* Increased border radius for softer look */
+    --sidebar: oklch(0.99 0.005 120); /* Softer sidebar */
+    --sidebar-foreground: oklch(0.35 0.01 120); /* Softer text */
+    --sidebar-primary: oklch(0.96 0.01 120); /* Softer primary */
+    --sidebar-primary-foreground: oklch(0.35 0.01 120); /* Softer text */
+    --sidebar-accent: oklch(0.5 0.12 140); /* Soft green */
+    --sidebar-accent-foreground: oklch(0.99 0.005 120); /* Soft white */
+    --sidebar-border: oklch(0.92 0.01 120); /* Softer border */
+    --sidebar-ring: oklch(0.5 0.12 140); /* Soft green */
+}
+
+.dark {
+    --background: oklch(0.08 0.005 120); /* Softer dark background */
+    --foreground: oklch(0.95 0.005 120); /* Softer light text */
+    --card: oklch(0.1 0.005 120); /* Softer dark card */
+    --card-foreground: oklch(0.95 0.005 120); /* Softer light text */
+    --popover: oklch(0.08 0.005 120); /* Softer dark popover */
+    --popover-foreground: oklch(0.95 0.005 120); /* Softer light text */
+    /* Brighter green for dark mode visibility */
+    --primary: oklch(0.6 0.15 140); /* Brighter green for dark mode */
+    --primary-foreground: oklch(
+        0.08 0.005 120
+    ); /* Dark text on bright primary */
+    --secondary: oklch(0.15 0.01 120); /* Softer dark secondary */
+    --secondary-foreground: oklch(0.95 0.005 120); /* Softer light text */
+    --muted: oklch(0.15 0.01 120); /* Softer dark muted */
+    --muted-foreground: oklch(0.7 0.01 120); /* Softer muted text */
+    /* Brighter green accent for dark mode instead of coral */
+    --accent: oklch(0.55 0.18 160); /* Brighter green for dark mode */
+    --accent-foreground: oklch(0.08 0.005 120); /* Dark text on bright accent */
+    --destructive: oklch(0.6 0.2 15); /* Brighter red for dark mode */
+    --destructive-foreground: oklch(0.95 0.005 120); /* Light text */
+    --border: oklch(0.2 0.01 120); /* Softer dark border */
+    --input: oklch(0.15 0.01 120); /* Softer dark input */
+    --ring: oklch(0.6 0.15 140); /* Bright ring for dark mode */
+    /* Updated dark mode chart colors to green variants */
+    --chart-1: oklch(0.6 0.15 140); /* Bright green */
+    --chart-2: oklch(0.55 0.18 160); /* Bright darker green */
+    --chart-3: oklch(0.65 0.12 130); /* Bright light green */
+    --chart-4: oklch(0.5 0.1 150); /* Medium green */
+    --chart-5: oklch(0.45 0.12 170); /* Dark green */
+    --sidebar: oklch(0.12 0.005 120); /* Softer dark sidebar */
+    --sidebar-foreground: oklch(0.95 0.005 120); /* Light text */
+    --sidebar-primary: oklch(0.6 0.15 140); /* Bright primary */
+    --sidebar-primary-foreground: oklch(0.95 0.005 120); /* Light text */
+    --sidebar-accent: oklch(0.15 0.01 120); /* Dark accent */
+    --sidebar-accent-foreground: oklch(0.95 0.005 120); /* Light text */
+    --sidebar-border: oklch(0.2 0.01 120); /* Softer border */
+    --sidebar-ring: oklch(0.6 0.15 140); /* Bright ring */
+}
+
+@theme inline {
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+/* Added smooth animations for modals and dropdowns */
+@layer components {
+    .animate-modal-in {
+        animation: modal-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .animate-modal-out {
+        animation: modal-out 0.2s cubic-bezier(0.4, 0, 1, 1);
+    }
+
+    .animate-dropdown-in {
+        animation: dropdown-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .animate-dropdown-out {
+        animation: dropdown-out 0.15s cubic-bezier(0.4, 0, 1, 1);
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+}
+
+@keyframes modal-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translate(-50%, -48%);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translate(-50%, -50%);
+    }
+}
+
+@keyframes modal-out {
+    from {
+        opacity: 1;
+        transform: scale(1) translate(-50%, -50%);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95) translate(-50%, -48%);
+    }
+}
+
+@keyframes dropdown-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dropdown-out {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
